@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LummXD Store - Premium Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root {
+  --bg: #050914;
+  --text: #ffffff;
+  --text-muted: #8b9bb4;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-hover: rgba(255, 255, 255, 0.06);
+  --primary: #2563eb;
+  --secondary: #f59e0b;
+  --glow-primary: rgba(37, 99, 235, 0.4);
+  --glow-secondary: rgba(245, 158, 11, 0.4);
+}
+
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-border: rgba(0, 0, 0, 0.05);
+  --card-hover: rgba(255, 255, 255, 1);
+}
+
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 100px;
+  overflow-x: hidden;
+}
+
+.bg-glow {
+  position: fixed;
+  top: -10%; left: -10%;
+  width: 120%; height: 120%;
+  background:
+    radial-gradient(circle at 20% 20%, var(--glow-primary) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, var(--glow-secondary) 0%, transparent 40%);
+  opacity: 0.3;
+  z-index: -1;
+  filter: blur(80px);
+}
+
+[data-theme="light"] .bg-glow { opacity: 0.1; }
+
+/* ==================== NAVBAR ATAS ==================== */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  padding: 0.9rem 1.2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(5, 9, 20, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--card-border);
+  z-index: 1000;
+  gap: 10px;
+}
+
+[data-theme="light"] .navbar { background: rgba(248, 250, 252, 0.7); }
+
+.brand {
+  font-size: 1.15rem; font-weight: 800;
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+
+.brand-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.9rem;
+}
+
+.nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* ==================== JAM DIGITAL ==================== */
+.digital-clock {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0.4rem 0.7rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700; font-size: 0.85rem;
+  letter-spacing: 0.5px; line-height: 1;
+  color: var(--text);
+}
+
+.digital-clock .clock-icon {
+  font-size: 0.75rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.digital-clock .clock-time {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+.digital-clock .clock-sec { color: var(--text-muted); font-size: 0.7rem; }
+
+@media (max-width: 380px) {
+  .digital-clock { padding: 0.35rem 0.55rem; font-size: 0.75rem; }
+  .digital-clock .clock-sec { display: none; }
+  .brand { font-size: 1rem; }
+  .brand-icon { width: 28px; height: 28px; font-size: 0.8rem; }
+}
+
+.btn-theme {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ==================== HALAMAN ==================== */
+.page-content { display: none; }
+.page-content.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.hero-section {
+  padding-top: 5rem;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+.banner-wrapper {
+  width: 100%; max-width: 1000px;
+  padding: 0 1rem; margin-bottom: 2rem; position: relative;
+}
+
+.banner-wrapper img {
+  width: 100%; border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  border: 1px solid var(--card-border);
+  display: block;
+}
+
+[data-theme="light"] .banner-wrapper img { box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+
+.hero-text { text-align: center; padding: 0 1.5rem; margin-bottom: 2rem; }
+
+.hero-text h1 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 800; line-height: 1.1; letter-spacing: -1px;
+  margin-bottom: 0.8rem;
+}
+
+.hero-text h1 span {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-text p {
+  font-size: 0.9rem; color: var(--text-muted);
+  max-width: 500px; margin: 0 auto; line-height: 1.6;
+}
+
+.hero-clock {
+  display: inline-flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  margin-top: 1.2rem; padding: 0.8rem 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.hero-clock .hc-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem; font-weight: 700; letter-spacing: 1px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-variant-numeric: tabular-nums; line-height: 1;
+}
+
+.hero-clock .hc-date {
+  font-size: 0.7rem; color: var(--text-muted);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+}
+
+.social-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 1.5rem; }
+
+.btn-social {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.7rem 1.2rem; border-radius: 50px;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  color: var(--text); text-decoration: none;
+  font-size: 0.8rem; font-weight: 600;
+}
+
+.btn-social.tiktok:hover { background: #000; color: #fff; }
+.btn-social.wa { color: #25d366; border-color: rgba(37,211,102,0.3); }
+.btn-social.wa:hover { background: #25d366; color: #fff; }
+.btn-social.kopi { color: var(--secondary); border-color: rgba(245,158,11,0.3); }
+.btn-social.kopi:hover { background: var(--secondary); color: #fff; }
+
+/* ==================== BENTO ==================== */
+.container { max-width: 1000px; margin: 0 auto; padding: 0 1rem 3rem; }
+
+.section-title {
+  font-size: 1.1rem; font-weight: 700; color: var(--text-muted);
+  margin-bottom: 1rem; padding-left: 0.5rem; text-transform: uppercase; letter-spacing: 1px;
+}
+
+.bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+.bento-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px; padding: 1.5rem;
+  text-decoration: none; color: var(--text);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+  backdrop-filter: blur(10px);
+}
+
+.bento-card:hover {
+  background: var(--card-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.bento-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: #fff; margin-bottom: 1rem;
+}
+
+.bento-card:nth-child(1) .bento-icon { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+.bento-card:nth-child(2) .bento-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.bento-card:nth-child(3) .bento-icon { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+.bento-card:nth-child(4) .bento-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.bento-card:nth-child(5) .bento-icon { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+.bento-card:nth-child(6) .bento-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+.bento-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+.bento-card p { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+
+@media (min-width: 640px) {
+  .bento-grid { grid-template-columns: repeat(3, 1fr); }
+  .bento-card:nth-child(1), .bento-card:nth-child(4) {
+    grid-column: span 2;
+    flex-direction: row; align-items: center;
+  }
+  .bento-card:nth-child(1) .bento-icon, .bento-card:nth-child(4) .bento-icon {
+    margin-bottom: 0; margin-right: 1.5rem;
+  }
+  .bento-card:nth-child(1) h3, .bento-card:nth-child(4) h3 { font-size: 1.2rem; }
+}
+
+/* ==================== DEVELOPER ==================== */
+.dev-page-wrapper { max-width: 450px; margin: 6rem auto 3rem; padding: 0 1.5rem; }
+
+.dev-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 32px; padding: 2.5rem 1.5rem;
+  text-align: center;
+  backdrop-filter: blur(20px);
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.dev-avatar {
+  width: 110px; height: 110px; margin: 0 auto 1.5rem;
+  border-radius: 50%; position: relative;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  padding: 4px;
+}
+.dev-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: 50%; border: 4px solid var(--bg);
+}
+
+.dev-badge {
+  display: inline-block; padding: 0.3rem 0.8rem;
+  background: rgba(37,99,235,0.15); color: #60a5fa;
+  border: 1px solid rgba(37,99,235,0.3);
+  border-radius: 100px; font-size: 0.65rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem;
+}
+
+[data-theme="light"] .dev-badge { color: var(--primary); }
+
+.dev-name {
+  font-size: 1.8rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 0.5rem;
+}
+.dev-name i { color: #0ea5e9; font-size: 1.2rem; }
+
+.dev-desc {
+  font-size: 0.85rem; color: var(--text-muted);
+  line-height: 1.5; margin-bottom: 2rem;
+}
+
+.quote-card {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--card-border);
+  border-radius: 20px; padding: 1.5rem;
+  text-align: left; position: relative;
+}
+
+[data-theme="light"] .quote-card { background: rgba(0,0,0,0.03); }
+
+.quote-icon {
+  position: absolute; top: -12px; left: 20px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.7rem;
+}
+
+.quote-card h3 {
+  font-size: 0.95rem; font-style: italic; font-weight: 600;
+  line-height: 1.5; margin-top: 8px; margin-bottom: 8px;
+}
+
+.quote-card p { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+
+/* ==================== NAVBAR BAWAH ==================== */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(5, 9, 20, 0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--card-border);
+  display: flex; justify-content: space-around;
+  padding: 0.8rem 1rem calc(0.8rem + env(safe-area-inset-bottom));
+  z-index: 1000;
+}
+
+[data-theme="light"] .bottom-nav { background: rgba(248, 250, 252, 0.8); }
+
+.nav-link {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  text-decoration: none; color: var(--text-muted);
+  font-size: 0.7rem; font-weight: 600; padding: 0.4rem 1.2rem;
+  border-radius: 12px; transition: 0.3s;
+}
+
+.nav-link i { font-size: 1.2rem; }
+.nav-link.active { color: var(--text); background: var(--card-bg); border: 1px solid var(--card-border); }
+
+@media (max-width: 480px) {
+  .banner-wrapper { padding: 0 0.8rem; }
+  .banner-wrapper img { border-radius: 16px; }
+  .bento-grid { gap: 10px; }
+  .bento-card { padding: 1.2rem; border-radius: 20px; }
+  .bento-card h3 { font-size: 0.9rem; }
+  .bento-card p { font-size: 0.7rem; }
+  .nav-link { padding: 0.4rem 0.8rem; font-size: 0.65rem; }
+}
+
+/* ==================== HALAMAN AL-QUR'AN ==================== */
+.quran-wrapper { max-width: 800px; margin: 0 auto; padding: 5.5rem 1rem 2rem; }
+
+.quran-header {
+  text-align: center; margin-bottom: 1.5rem;
+}
+.quran-header h1 {
+  font-size: 1.4rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.3rem;
+}
+.quran-header p {
+  font-size: 0.75rem; color: var(--text-muted);
+}
+
+.quran-search {
+  position: relative; margin-bottom: 1rem;
+}
+.quran-search input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.6rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  color: var(--text);
+  font-size: 0.85rem;
+  outline: none;
+  backdrop-filter: blur(10px);
+}
+.quran-search input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+.quran-search input::placeholder { color: var(--text-muted); }
+.quran-search i {
+  position: absolute; left: 1rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted); font-size: 0.85rem;
+}
+
+.quran-lastread {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(245,158,11,0.1));
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.quran-lastread:hover { border-color: var(--primary); }
+.quran-lastread i { color: var(--secondary); }
+.quran-lastread strong { color: var(--text); }
+
+/* List Surah */
+.surah-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.surah-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0.9rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text);
+  transition: 0.2s;
+}
+
+.surah-item:hover {
+  background: var(--card-hover);
+  border-color: var(--primary);
+  transform: translateX(3px);
+}
+
+.surah-number {
+  width: 38px; height: 38px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 10px;
+  font-weight: 800; font-size: 0.85rem; color: white;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.surah-info { flex: 1; min-width: 0; }
+.surah-name {
+  font-size: 0.9rem; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.surah-meta {
+  font-size: 0.68rem; color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.surah-arabic {
+  font-family: 'Amiri', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--secondary);
+  flex-shrink: 0;
+}
+
+/* Detail Surah */
+.surah-detail { display: none; }
+.surah-detail.active { display: block; }
+.surah-list.hidden { display: none; }
+
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0.5rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  color: var(--text); font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; margin-bottom: 1rem;
+}
+.back-btn:hover { border-color: var(--primary); }
+
+.surah-detail-header {
+  background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(245,158,11,0.15));
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 1.2rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.surah-detail-header .sd-arabic {
+  font-family: 'Amiri', serif;
+  font-size: 1.8rem; font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 0.3rem;
+}
+.surah-detail-header .sd-name {
+  font-size: 1.1rem; font-weight: 800; margin-bottom: 0.2rem;
+}
+.surah-detail-header .sd-meta {
+  font-size: 0.72rem; color: var(--text-muted);
+}
+.surah-detail-header .sd-desc {
+  font-size: 0.75rem; color: var(--text-muted);
+  margin-top: 0.6rem; line-height: 1.5;
+}
+
+.ayat-list { display: flex; flex-direction: column; gap: 12px; }
+
+.ayat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 1.2rem;
+  backdrop-filter: blur(10px);
+}
+
+.ayat-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.ayat-number {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 50%;
+  font-size: 0.75rem; font-weight: 800; color: white;
+  font-family: 'JetBrains Mono', monospace;
+  flex-shrink: 0;
+}
+
+.ayat-audio {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(37,99,235,0.15);
+  border: 1px solid rgba(37,99,235,0.3);
+  border-radius: 50%;
+  color: var(--primary);
+  cursor: pointer; font-size: 0.8rem;
+  transition: 0.2s;
+}
+.ayat-audio:hover { background: var(--primary); color: white; }
+.ayat-audio.playing { background: var(--secondary); border-color: var(--secondary); color: white; animation: pulse 1.2s infinite; }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(245,158,11,0); }
+}
+
+.ayat-arabic {
+  font-family: 'Amiri', serif;
+  font-size: 1.55rem;
+  line-height: 2.2;
+  text-align: right;
+  direction: rtl;
+  margin-bottom: 0.8rem;
+  color: var(--text);
+}
+
+.ayat-latin {
+  font-size: 0.78rem;
+  color: var(--secondary);
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.ayat-translation {
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.loading-state {
+  text-align: center; padding: 2rem 1rem;
+  color: var(--text-muted); font-size: 0.85rem;
+}
+.loading-state i {
+  display: block; font-size: 2rem; margin-bottom: 0.8rem;
+  color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.surah-nav {
+  display: flex; gap: 10px; margin-top: 1.5rem;
+}
+.surah-nav button {
+  flex: 1;
+  padding: 0.8rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  color: var(--text); font-size: 0.8rem; font-weight: 600;
+  cursor: pointer;
+}
+.surah-nav button:hover:not(:disabled) {
+  background: var(--primary); border-color: var(--primary); color: white;
+}
+.surah-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- NAVBAR ATAS + JAM DIGITAL -->
+<nav class="navbar">
+  <div class="brand">
+    <div class="brand-icon"><i class="fa-solid fa-bolt"></i></div>
+    LummXD
+  </div>
+
+  <div class="nav-right">
+    <div class="digital-clock" title="Waktu lokal perangkat Anda">
+      <i class="fa-regular fa-clock clock-icon"></i>
+      <span class="clock-time" id="clockTime">--:--</span>
+      <span class="clock-sec" id="clockSec">:--</span>
+    </div>
+
+    <button class="btn-theme" id="themeBtn">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- ==================== HALAMAN 1: BERANDA ==================== -->
+<div id="page-beranda" class="page-content active">
+
+  <div class="hero-section">
+    <div class="banner-wrapper">
+      <img src="banner.jpg" alt="LummXD Banner">
+    </div>
+
+    <div class="hero-text">
+      <h1>Solusi Digital<br><span>Dalam Satu Tempat</span></h1>
+      <p>Akses layanan top up, tools premium, dan kebutuhan digital lainnya dengan cepat dan aman.</p>
+
+      <div class="hero-clock">
+        <div class="hc-time" id="heroClock">--:--:--</div>
+        <div class="hc-date" id="heroDate">Memuat tanggal...</div>
+      </div>
+
+      <div class="social-row">
+        <a href="https://www.tiktok.com/@lumzssstore_reall" target="_blank" class="btn-social tiktok">
+          <i class="fa-brands fa-tiktok"></i> TikTok
+        </a>
+        <a href="https://whatsapp.com/channel/0029Vb8UPJqDzgTEfcxodd1v" target="_blank" class="btn-social wa">
+          <i class="fa-brands fa-whatsapp"></i> Saluran
+        </a>
+        <a href="https://donate-lummxd.vercel.app" target="_blank" class="btn-social kopi">
+          <i class="fa-solid fa-mug-hot"></i> Traktir Kopi
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section-title">Layanan Kami</div>
+
+    <div class="bento-grid">
+
+      <a href="https://all-tools-lummxd.vercel.app" target="_blank" class="bento-card">
+        <div class="bento-icon"><i class="fa-solid fa-toolbox"></i></div>
+        <div>
+          <h3>All Tools</h3>
+          <p>Berbagai alat bantu digital untuk mempermudah pekerjaanmu.</p>
+        </div>
+      </a>
+
+      <a href="https://shop-lummxd.vercel.app" target="_blank" class="bento-card">
+        <div class="bento-icon"><i class="fa-solid fa-rocket"></i></div>
+        <div>
+          <h3>Boost Saluran</h3>
+          <p>Tingkatkan subscriber & engagement.</p>
+        </div>
+      </a>
+
+      <a href="https://prem-app-lummxd.vercel.app" target="_blank" class="bento-card">
+        <div class="bento-icon"><i class="fa-solid fa-crown"></i></div>
+        <div>
+          <h3>AM Prem 1Thn</h3>
+          <p>Aplikasi premium harga murah.</p>
+        </div>
+      </a>
+
+      <a href="https://toplumzy.grosirtopup.com" target="_blank" class="bento-card">
+        <div class="bento-icon"><i class="fa-solid fa-gamepad"></i></div>
+        <div>
+          <h3>Top Up Game</h3>
+          <p>Isi diamond, UC, & voucher game favoritmu dengan proses instan.</p>
+        </div>
+      </a>
+
+      <a href="https://princelis-lummxd.vercel.app" target="_blank" class="bento-card">
+        <div class="bento-icon"><i class="fa-solid fa-envelope"></i></div>
+        <div>
+          <h3>Rental Gmail</h3>
+          <p>Sewa akun Gmail berkualitas.</p>
+        </div>
+      </a>
+
+      <a href="https://lummxd-musicsptfy-tools.vercel.app" target="_blank" class="bento-card">
+        <div class="bento-icon"><i class="fa-solid fa-music"></i></div>
+        <div>
+          <h3>Music Tools</h3>
+          <p>Download musik praktis.</p>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== HALAMAN 2: AL-QUR'AN ==================== -->
+<div id="page-quran" class="page-content">
+  <div class="quran-wrapper">
+
+    <!-- LIST SURAH -->
+    <div id="quranListView">
+      <div class="quran-header">
+        <h1>Al-Qur'an Digital</h1>
+        <p>114 Surah • Arab, Latin & Terjemahan</p>
+      </div>
+
+      <div class="quran-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="surahSearch" placeholder="Cari surah (nama / nomor)...">
+      </div>
+
+      <div class="quran-lastread" id="lastReadBox" style="display:none;">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>Terakhir dibaca: <strong id="lastReadName">-</strong></span>
+      </div>
+
+      <div class="surah-list" id="surahList">
+        <div class="loading-state">
+          <i class="fa-solid fa-circle-notch"></i>
+          Memuat daftar surah...
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAIL SURAH -->
+    <div class="surah-detail" id="surahDetailView">
+      <button class="back-btn" onclick="tutupSurah()">
+        <i class="fa-solid fa-arrow-left"></i> Kembali
+      </button>
+
+      <div class="surah-detail-header" id="surahDetailHeader">
+        <div class="sd-arabic">--</div>
+        <div class="sd-name">Memuat...</div>
+        <div class="sd-meta">--</div>
+      </div>
+
+      <div class="ayat-list" id="ayatList">
+        <div class="loading-state">
+          <i class="fa-solid fa-circle-notch"></i>
+          Memuat ayat...
+        </div>
+      </div>
+
+      <div class="surah-nav">
+        <button id="prevSurahBtn" onclick="navSurah(-1)">
+          <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+        </button>
+        <button id="nextSurahBtn" onclick="navSurah(1)">
+          Selanjutnya <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== HALAMAN 3: DEVELOPER ==================== -->
+<div id="page-developer" class="page-content">
+  <div class="dev-page-wrapper">
+    <div class="dev-card">
+
+      <div class="dev-avatar">
+        <img src="gambar.jpg" alt="Developer">
+      </div>
+
+      <div class="dev-badge">Developer</div>
+
+      <h2 class="dev-name">
+        LummXD <i class="fa-solid fa-circle-check"></i>
+      </h2>
+
+      <p class="dev-desc">
+        Independent developer • Digital creator • Building projects with passion.
+      </p>
+
+      <div class="quote-card">
+        <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+        <h3>"Happiness is not having a lot, but appreciating what you have."</h3>
+        <p>(Kebahagiaan bukanlah memiliki banyak hal, melainkan menghargai apa yang kamu punya.)</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR BAWAH -->
+<nav class="bottom-nav">
+  <a href="#" class="nav-link active" onclick="gantiHalaman('beranda', this); return false;">
+    <i class="fa-solid fa-house"></i>
+    <span>Beranda</span>
+  </a>
+  <a href="#" class="nav-link" onclick="gantiHalaman('quran', this); return false;">
+    <i class="fa-solid fa-book-quran"></i>
+    <span>Al-Qur'an</span>
+  </a>
+  <a href="#" class="nav-link" onclick="gantiHalaman('developer', this); return false;">
+    <i class="fa-solid fa-code"></i>
+    <span>Developer</span>
+  </a>
+</nav>
+
+<script>
+// --- LOGIKA TEMA ---
+const btnTheme = document.getElementById('themeBtn');
+const iconTheme = document.getElementById('themeIcon');
+const htmlEl = document.documentElement;
+
+if (localStorage.getItem('theme') === 'light') {
+  htmlEl.setAttribute('data-theme', 'light');
+  iconTheme.className = 'fa-solid fa-sun';
+}
+
+btnTheme.onclick = () => {
+  if (htmlEl.getAttribute('data-theme') === 'light') {
+    htmlEl.removeAttribute('data-theme');
+    localStorage.setItem('theme', 'dark');
+    iconTheme.className = 'fa-solid fa-moon';
+  } else {
+    htmlEl.setAttribute('data-theme', 'light');
+    localStorage.setItem('theme', 'light');
+    iconTheme.className = 'fa-solid fa-sun';
+  }
+};
+
+// --- LOGIKA PINDAH HALAMAN ---
+function gantiHalaman(id, elemen) {
+  document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+
+  document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+  elemen.classList.add('active');
+
+  window.scrollTo(0, 0);
+
+  // Muat surah pertama kali tab Quran dibuka
+  if (id === 'quran' && !quranLoaded) {
+    quranLoaded = true;
+    loadSurahList();
+  }
+  // Tampilkan surah terakhir dibaca
+  if (id === 'quran') updateLastReadBox();
+}
+
+// ============================================================
+// ================ JAM DIGITAL REAL-TIME =====================
+// ============================================================
+const NAMA_HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function updateClock() {
+  const now = new Date();
+  const hh = pad(now.getHours());
+  const mm = pad(now.getMinutes());
+  const ss = pad(now.getSeconds());
+
+  const clockTime = document.getElementById('clockTime');
+  const clockSec  = document.getElementById('clockSec');
+  if (clockTime) clockTime.textContent = `${hh}:${mm}`;
+  if (clockSec)  clockSec.textContent  = `:${ss}`;
+
+  const heroClock = document.getElementById('heroClock');
+  const heroDate  = document.getElementById('heroDate');
+  if (heroClock) heroClock.textContent = `${hh}:${mm}:${ss}`;
+  if (heroDate) {
+    const hari  = NAMA_HARI[now.getDay()];
+    const tgl   = now.getDate();
+    const bulan = NAMA_BULAN[now.getMonth()];
+    const tahun = now.getFullYear();
+    heroDate.textContent = `${hari}, ${tgl} ${bulan} ${tahun}`;
+  }
+
+  const tzEl = document.getElementById('clockTime');
+  if (tzEl) {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Lokal';
+    tzEl.parentElement.title = `Waktu lokal Anda (${tz})`;
+  }
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+// ============================================================
+// ================== AL-QUR'AN (API equran.id) ===============
+// ============================================================
+const API_BASE = 'https://equran.id/api/v2';
+let quranLoaded = false;
+let allSurah = [];
+let currentSurah = null;
+let currentAudio = null;
+let currentAudioBtn = null;
+
+// Muat daftar surah
+async function loadSurahList() {
+  const listEl = document.getElementById('surahList');
+  try {
+    const res = await fetch(`${API_BASE}/surat`);
+    const json = await res.json();
+    if (!json.data) throw new Error('Format data tidak valid');
+    allSurah = json.data;
+    renderSurahList(allSurah);
+  } catch (err) {
+    console.error(err);
+    listEl.innerHTML = `
+      <div class="loading-state">
+        <i class="fa-solid fa-triangle-exclamation" style="color:var(--secondary);"></i>
+        Gagal memuat daftar surah.<br>
+        <button onclick="loadSurahList()" style="margin-top:1rem;padding:0.5rem 1rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Coba Lagi</button>
+      </div>`;
+  }
+}
+
+// Render daftar surah
+function renderSurahList(data) {
+  const listEl = document.getElementById('surahList');
+  if (!data.length) {
+    listEl.innerHTML = `<div class="loading-state">Surah tidak ditemukan.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = data.map(s => `
+    <button class="surah-item" onclick="bukaSurah(${s.nomor})">
+      <div class="surah-number">${s.nomor}</div>
+      <div class="surah-info">
+        <div class="surah-name">${s.namaLatin}</div>
+        <div class="surah-meta">${s.arti} • ${s.jumlahAyat} ayat • ${s.tempatTurun}</div>
+      </div>
+      <div class="surah-arabic">${s.nama}</div>
+    </button>
+  `).join('');
+}
+
+// Pencarian surah
+document.getElementById('surahSearch').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  if (!q) {
+    renderSurahList(allSurah);
+    return;
+  }
+  const filtered = allSurah.filter(s =>
+    s.namaLatin.toLowerCase().includes(q) ||
+    s.arti.toLowerCase().includes(q) ||
+    String(s.nomor).includes(q)
+  );
+  renderSurahList(filtered);
+});
+
+// Buka surah
+async function bukaSurah(nomor) {
+  // Hentikan audio yang sedang main
+  stopAudio();
+
+  document.getElementById('quranListView').style.display = 'none';
+  document.getElementById('surahDetailView').classList.add('active');
+
+  const headerEl = document.getElementById('surahDetailHeader');
+  const ayatEl = document.getElementById('ayatList');
+
+  headerEl.innerHTML = `
+    <div class="sd-arabic">--</div>
+    <div class="sd-name">Memuat...</div>
+    <div class="sd-meta">--</div>`;
+
+  ayatEl.innerHTML = `
+    <div class="loading-state">
+      <i class="fa-solid fa-circle-notch"></i>
+      Memuat ayat...
+    </div>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/surat/${nomor}`);
+    const json = await res.json();
+    if (!json.data) throw new Error('Data surah tidak ditemukan');
+    const s = json.data;
+    currentSurah = s;
+
+    // Simpan last read
+    localStorage.setItem('lastReadSurah', JSON.stringify({
+      nomor: s.nomor,
+      namaLatin: s.namaLatin
+    }));
+    updateLastReadBox();
+
+    // Header
+    headerEl.innerHTML = `
+      <div class="sd-arabic">${s.nama}</div>
+      <div class="sd-name">${s.nomor}. ${s.namaLatin}</div>
+      <div class="sd-meta">${s.arti} • ${s.jumlahAyat} ayat • ${s.tempatTurun}</div>
+      ${s.deskripsi ? `<div class="sd-desc">${s.deskripsi}</div>` : ''}
+    `;
+
+    // Ayat
+    ayatEl.innerHTML = s.ayat.map(a => `
+      <div class="ayat-card" id="ayat-${a.nomorAyat}">
+        <div class="ayat-top">
+          <div class="ayat-number">${a.nomorAyat}</div>
+          ${a.audio['05'] ? `
+            <button class="ayat-audio" onclick="playAudio('${a.audio['05']}', this)" title="Putar murottal">
+              <i class="fa-solid fa-play"></i>
+            </button>` : ''}
+        </div>
+        <div class="ayat-arabic">${a.teksArab}</div>
+        <div class="ayat-latin">${a.teksLatin}</div>
+        <div class="ayat-translation">${a.teksIndonesia}</div>
+      </div>
+    `).join('');
+
+    // Tombol prev/next
+    document.getElementById('prevSurahBtn').disabled = s.suratSebelumnya === false;
+    document.getElementById('nextSurahBtn').disabled = s.suratSelanjutnya === false;
+
+    window.scrollTo(0, 0);
+  } catch (err) {
+    console.error(err);
+    ayatEl.innerHTML = `
+      <div class="loading-state">
+        <i class="fa-solid fa-triangle-exclamation" style="color:var(--secondary);"></i>
+        Gagal memuat surah.<br>
+        <button onclick="bukaSurah(${nomor})" style="margin-top:1rem;padding:0.5rem 1rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Coba Lagi</button>
+      </div>`;
+  }
+}
+
+// Tutup surah (kembali ke list)
+function tutupSurah() {
+  stopAudio();
+  document.getElementById('surahDetailView').classList.remove('active');
+  document.getElementById('quranListView').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+// Navigasi prev/next surah
+function navSurah(dir) {
+  if (!currentSurah) return;
+  const target = dir === 1
+    ? (currentSurah.suratSelanjutnya && currentSurah.suratSelanjutnya.nomor)
+    : (currentSurah.suratSebelumnya && currentSurah.suratSebelumnya.nomor);
+  if (target) {
+    bukaSurah(target);
+  }
+}
+
+// Audio player
+function playAudio(url, btn) {
+  // Kalau tombol sama diklik saat playing → stop
+  if (currentAudioBtn === btn && currentAudio && !currentAudio.paused) {
+    stopAudio();
+    return;
+  }
+  stopAudio();
+
+  currentAudio = new Audio(url);
+  currentAudioBtn = btn;
+  btn.classList.add('playing');
+  btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+
+  currentAudio.play().catch(err => {
+    console.error('Gagal memutar audio:', err);
+    stopAudio();
+  });
+
+  currentAudio.addEventListener('ended', stopAudio);
+  currentAudio.addEventListener('error', stopAudio);
+}
+
+function stopAudio() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  if (currentAudioBtn) {
+    currentAudioBtn.classList.remove('playing');
+    currentAudioBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    currentAudioBtn = null;
+  }
+}
+
+// Tampilkan box "Terakhir dibaca"
+function updateLastReadBox() {
+  const box = document.getElementById('lastReadBox');
+  const nameEl = document.getElementById('lastReadName');
+  if (!box || !nameEl) return;
+
+  const raw = localStorage.getItem('lastReadSurah');
+  if (!raw) {
+    box.style.display = 'none';
+    return;
+  }
+  try {
+    const data = JSON.parse(raw);
+    box.style.display = 'flex';
+    nameEl.textContent = `${data.namaLatin} (Surah ke-${data.nomor})`;
+    box.onclick = () => bukaSurah(data.nomor);
+  } catch {
+    box.style.display = 'none';
+  }
+}
+</script>
+
+</body>
+</html>
