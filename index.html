@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LummXD Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#050914;--text:#fff;--text-muted:#8b9bb4;--card-bg:rgba(255,255,255,.03);--card-border:rgba(255,255,255,.08);--card-hover:rgba(255,255,255,.06);--primary:#2563eb;--secondary:#f59e0b;--glow-primary:rgba(37,99,235,.4);--glow-secondary:rgba(245,158,11,.4)}
+[data-theme="light"]{--bg:#f8fafc;--text:#0f172a;--text-muted:#64748b;--card-bg:rgba(255,255,255,.7);--card-border:rgba(0,0,0,.05);--card-hover:#fff}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;transition:background-color .3s,color .3s,border-color .3s,transform .3s;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);padding-bottom:100px;overflow-x:hidden}
+.bg-glow{position:fixed;top:-10%;left:-10%;width:120%;height:120%;background:radial-gradient(circle at 20% 20%,var(--glow-primary) 0,transparent 40%),radial-gradient(circle at 80% 80%,var(--glow-secondary) 0,transparent 40%);opacity:.3;z-index:-1;filter:blur(80px)}
+[data-theme="light"] .bg-glow{opacity:.1}
+.navbar{position:fixed;top:0;left:0;right:0;padding:.9rem 1.2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(5,9,20,.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border);z-index:1000;gap:10px}
+[data-theme="light"] .navbar{background:rgba(248,250,252,.7)}
+.brand{font-size:1.15rem;font-weight:800;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.digital-clock{display:flex;align-items:center;gap:6px;padding:.4rem .7rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.85rem;line-height:1}
+.digital-clock .clock-icon{font-size:.75rem;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.digital-clock .clock-time{background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-variant-numeric:tabular-nums}
+.digital-clock .clock-sec{color:var(--text-muted);font-size:.7rem}
+.btn-theme{width:36px;height:36px;border-radius:50%;background:var(--card-bg);border:1px solid var(--card-border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.page-content{display:none}
+.page-content.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.hero-section{padding-top:5rem;display:flex;flex-direction:column;align-items:center}
+.banner-wrapper{width:100%;max-width:1000px;padding:0 1rem;margin-bottom:2rem}
+.banner-wrapper img{width:100%;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.3);border:1px solid var(--card-border);display:block}
+.hero-text{text-align:center;padding:0 1.5rem;margin-bottom:2rem}
+.hero-text h1{font-size:clamp(1.8rem,5vw,2.5rem);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:.8rem}
+.hero-text h1 span{background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-text p{font-size:.9rem;color:var(--text-muted);max-width:500px;margin:0 auto;line-height:1.6}
+.hero-clock{display:inline-flex;flex-direction:column;align-items:center;gap:4px;margin-top:1.2rem;padding:.8rem 1.5rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px}
+.hero-clock .hc-time{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;letter-spacing:1px;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-variant-numeric:tabular-nums;line-height:1}
+.hero-clock .hc-date{font-size:.7rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.social-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:1.5rem}
+.btn-social{display:flex;align-items:center;gap:8px;padding:.7rem 1.2rem;border-radius:50px;background:var(--card-bg);border:1px solid var(--card-border);color:var(--text);text-decoration:none;font-size:.8rem;font-weight:600}
+.btn-social.tiktok:hover{background:#000;color:#fff}
+.btn-social.wa{color:#25d366;border-color:rgba(37,211,102,.3)}
+.btn-social.kopi{color:var(--secondary);border-color:rgba(245,158,11,.3)}
+.container{max-width:1000px;margin:0 auto;padding:0 1rem 3rem}
+.section-title{font-size:1.1rem;font-weight:700;color:var(--text-muted);margin-bottom:1rem;padding-left:.5rem;text-transform:uppercase;letter-spacing:1px}
+.bento-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.bento-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:24px;padding:1.5rem;text-decoration:none;color:var(--text);display:flex;flex-direction:column;justify-content:space-between}
+.bento-card:hover{background:var(--card-hover);transform:translateY(-3px)}
+.bento-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;margin-bottom:1rem}
+.bento-card:nth-child(1) .bento-icon,.bento-card:nth-child(3) .bento-icon,.bento-card:nth-child(5) .bento-icon{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+.bento-card:nth-child(2) .bento-icon,.bento-card:nth-child(4) .bento-icon,.bento-card:nth-child(6) .bento-icon{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.bento-card h3{font-size:1rem;font-weight:700;margin-bottom:.3rem}
+.bento-card p{font-size:.75rem;color:var(--text-muted);line-height:1.4}
+.dev-page-wrapper{max-width:450px;margin:6rem auto 3rem;padding:0 1.5rem}
+.dev-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:32px;padding:2.5rem 1.5rem;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.dev-avatar{width:110px;height:110px;margin:0 auto 1.5rem;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));padding:4px}
+.dev-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:4px solid var(--bg)}
+.dev-badge{display:inline-block;padding:.3rem .8rem;background:rgba(37,99,235,.15);color:#60a5fa;border:1px solid rgba(37,99,235,.3);border-radius:100px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem}
+.dev-name{font-size:1.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:.5rem}
+.dev-name i{color:#0ea5e9;font-size:1.2rem}
+.dev-desc{font-size:.85rem;color:var(--text-muted);line-height:1.5;margin-bottom:2rem}
+.quote-card{background:rgba(0,0,0,.2);border:1px solid var(--card-border);border-radius:20px;padding:1.5rem;text-align:left;position:relative}
+.quote-icon{position:absolute;top:-12px;left:20px;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem}
+.quote-card h3{font-size:.95rem;font-style:italic;font-weight:600;line-height:1.5;margin-top:8px;margin-bottom:8px}
+.quote-card p{font-size:.75rem;color:var(--text-muted);line-height:1.4}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(5,9,20,.8);backdrop-filter:blur(20px);border-top:1px solid var(--card-border);display:flex;justify-content:space-around;padding:.8rem 1rem calc(.8rem + env(safe-area-inset-bottom));z-index:1000}
+[data-theme="light"] .bottom-nav{background:rgba(248,250,252,.8)}
+.nav-link{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--text-muted);font-size:.7rem;font-weight:600;padding:.4rem 1rem;border-radius:12px;transition:.3s}
+.nav-link i{font-size:1.2rem}
+.nav-link.active{color:var(--text);background:var(--card-bg);border:1px solid var(--card-border)}
+.quran-wrapper{max-width:800px;margin:0 auto;padding:5.5rem 1rem 2rem}
+.quran-header{text-align:center;margin-bottom:1.5rem}
+.quran-header h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.3rem}
+.quran-search{position:relative;margin-bottom:1rem}
+.quran-search input{width:100%;padding:.85rem 1rem .85rem 2.6rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;color:var(--text);outline:none}
+.quran-search i{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)}
+.surah-list{display:grid;grid-template-columns:1fr;gap:8px}
+.surah-item{display:flex;align-items:center;gap:12px;padding:.9rem 1rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;cursor:pointer;text-align:left;color:var(--text)}
+.surah-number{width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:10px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace}
+.surah-info{flex:1}
+.surah-name{font-size:.9rem;font-weight:700}
+.surah-meta{font-size:.68rem;color:var(--text-muted)}
+.surah-arabic{font-family:'Amiri',serif;font-size:1.1rem;font-weight:700;color:var(--secondary)}
+.surah-detail{display:none}
+.surah-detail.active{display:block}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:.5rem 1rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;color:var(--text);cursor:pointer;margin-bottom:1rem}
+.surah-detail-header{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:1.2rem;text-align:center;margin-bottom:1rem}
+.sd-arabic{font-family:'Amiri',serif;font-size:1.8rem;font-weight:700;color:var(--secondary)}
+.sd-name{font-size:1.1rem;font-weight:800}
+.sd-meta{font-size:.72rem;color:var(--text-muted)}
+.ayat-list{display:flex;flex-direction:column;gap:12px}
+.ayat-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:1.2rem}
+.ayat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.ayat-number{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:50%;font-weight:800;color:#fff}
+.ayat-arabic{font-family:'Amiri',serif;font-size:1.55rem;line-height:2.2;text-align:right;direction:rtl;margin-bottom:.8rem}
+.ayat-latin{font-size:.78rem;color:var(--secondary);font-style:italic;margin-bottom:.5rem}
+.ayat-translation{font-size:.82rem;line-height:1.6}
+</style>
+</head>
+<style>
+.chat-wrapper{position:fixed;top:0;left:0;right:0;bottom:0;max-width:800px;margin:0 auto;padding:5rem 1rem calc(85px + env(safe-area-inset-bottom));display:flex;flex-direction:column;z-index:10}
+.chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-shrink:0}
+.chat-header h1{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:8px}
+.chat-status{font-size:.75rem;font-weight:600;padding:.3rem .6rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:20px;display:flex;align-items:center;gap:6px}
+.chat-status .dot{width:8px;height:8px;background:#10b981;border-radius:50%;box-shadow:0 0 8px #10b981}
+.chat-box{flex:1;overflow-y:auto;border-radius:16px;padding:1rem;display:flex;flex-direction:column;gap:15px;margin-bottom:.5rem;position:relative;background-color:var(--card-bg);background-image:radial-gradient(var(--card-border) 1px,transparent 1px);background-size:20px 20px;border:1px solid var(--card-border)}
+.chat-msg{display:flex;flex-direction:column;max-width:85%;position:relative;animation:popIn .2s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.chat-msg.mine{align-self:flex-end;align-items:flex-end}
+.chat-msg:not(.mine){align-self:flex-start;align-items:flex-start}
+.bubble-container{position:relative;transition:transform .2s ease;width:100%;display:flex}
+.chat-msg.mine .bubble-container{justify-content:flex-end}
+.chat-msg:not(.mine) .bubble-container{justify-content:flex-start}
+.chat-bubble{padding:.6rem .8rem;border-radius:12px;font-size:.85rem;line-height:1.4;word-wrap:break-word;position:relative;box-shadow:0 1px 2px rgba(0,0,0,.1);cursor:pointer;user-select:none;max-width:100%}
+.chat-msg.mine .chat-bubble{background:#005c4b;color:#fff;border-top-right-radius:2px}
+.chat-msg:not(.mine) .chat-bubble{background:var(--card-bg);color:var(--text);border-top-left-radius:2px}
+[data-theme="dark"] .chat-msg:not(.mine) .chat-bubble{background:#202c33;color:#fff}
+.chat-bubble img.chat-image{max-width:220px;width:100%;border-radius:8px;display:block;margin-top:4px;cursor:zoom-in}
+.chat-meta{font-size:.65rem;color:var(--text-muted);margin-bottom:4px;display:flex;gap:6px;align-items:center;padding:0 4px}
+.chat-meta .badge-owner{color:#ef4444;font-weight:800;display:flex;align-items:center;gap:3px}
+.reply-preview{background:rgba(0,0,0,.2);border-left:3px solid var(--secondary);padding:.4rem .6rem;border-radius:4px;font-size:.75rem;margin-bottom:6px;color:#cbd5e1;display:flex;flex-direction:column}
+.reply-preview strong{color:var(--secondary);font-size:.7rem}
+.reaction-display{position:absolute;bottom:-10px;right:5px;background:var(--bg);border:1px solid var(--card-border);padding:2px 6px;border-radius:10px;font-size:.75rem;display:flex;gap:2px;box-shadow:0 2px 5px rgba(0,0,0,.2);z-index:2}
+.chat-msg.mine .reaction-display{left:5px;right:auto}
+.msg-actions{display:none;position:absolute;bottom:100%;right:0;margin-bottom:5px;background:var(--card-bg);padding:6px 8px;border-radius:20px;border:1px solid var(--card-border);box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:10;gap:3px;align-items:center;flex-wrap:wrap;max-width:240px}
+.chat-msg.mine .msg-actions{right:auto;left:0}
+.msg-actions.active{display:flex;animation:slideUp .2s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg-actions button{background:transparent;border:none;font-size:1.1rem;cursor:pointer;padding:4px 6px;border-radius:50%;transition:.2s}
+.msg-actions button:hover{transform:scale(1.2)}
+.msg-actions .btn-delete{border-left:1px solid var(--card-border);padding-left:8px;margin-left:4px;font-size:1rem;color:#ef4444}
+.swipe-reply-icon{position:absolute;top:50%;transform:translateY(-50%);width:25px;height:25px;border-radius:50%;background:var(--card-bg);border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--primary);opacity:0;transition:opacity .2s;pointer-events:none}
+.chat-msg.mine .swipe-reply-icon{right:100%;margin-right:10px}
+.chat-msg:not(.mine) .swipe-reply-icon{left:100%;margin-left:10px}
+.reply-bar{display:none;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px 12px 0 0;padding:.6rem 1rem;border-bottom:none;font-size:.8rem;color:var(--text-muted);position:relative;margin-bottom:-1px;z-index:5}
+.reply-bar.active{display:flex;justify-content:space-between;align-items:center}
+.reply-bar strong{color:var(--secondary);display:block;font-size:.7rem;margin-bottom:2px}
+.reply-bar button{background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem}
+.chat-input-area{display:flex;gap:8px;flex-shrink:0;align-items:center;padding:6px;background:linear-gradient(135deg,rgba(37,99,235,.25),rgba(245,158,11,.25));border-radius:30px;border:1px solid var(--card-border);position:relative;box-shadow:0 4px 20px rgba(37,99,235,.15)}
+.chat-input-area::before{content:'';position:absolute;inset:-2px;border-radius:30px;background:linear-gradient(135deg,var(--primary),var(--secondary));z-index:-1;opacity:.5;filter:blur(6px);animation:glowPulse 3s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{opacity:.35}50%{opacity:.75}}
+.chat-input-area input[type="text"]{flex:1;padding:.7rem 1rem;background:rgba(0,0,0,.35);border:1px solid var(--card-border);border-radius:24px;color:var(--text);outline:none;font-size:.88rem}
+[data-theme="light"] .chat-input-area input[type="text"]{background:rgba(255,255,255,.9)}
+.chat-input-area input[type="text"]:focus{border-color:var(--secondary)}
+.btn-photo{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.35);border:1px solid var(--card-border);color:var(--secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;transition:.2s}
+[data-theme="light"] .btn-photo{background:rgba(255,255,255,.9)}
+.btn-photo:hover{background:var(--secondary);color:#fff;transform:scale(1.05)}
+.btn-send{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));border:none;color:#fff;font-size:1.15rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(37,99,235,.4);flex-shrink:0;transition:.25s;position:relative;overflow:hidden}
+.btn-send::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.4),transparent 60%);transform:translateX(-100%);transition:transform .6s}
+.btn-send:hover::after{transform:translateX(100%)}
+.btn-send:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(245,158,11,.5)}
+.btn-send:active{transform:scale(.95)}
+.photo-picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:3000;display:none;align-items:flex-end;justify-content:center;padding:1.5rem}
+.photo-picker-overlay.active{display:flex;animation:fadeIn .25s ease}
+.photo-picker{background:var(--bg);border:1px solid var(--card-border);border-radius:24px;padding:1.2rem;width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px;animation:slideUp .3s ease}
+.photo-picker h3{text-align:center;font-size:.9rem;color:var(--text-muted);margin-bottom:.5rem;font-weight:600}
+.photo-picker button{padding:.9rem 1rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left}
+.photo-picker button:hover{background:var(--card-hover)}
+.photo-picker button i{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;font-size:.95rem}
+.photo-picker .btn-cancel{background:transparent;border:none;justify-content:center;color:var(--text-muted);font-weight:700}
+.upload-progress{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.9);padding:1.5rem 2rem;border-radius:16px;z-index:4000;color:#fff;text-align:center;font-size:.85rem;border:1px solid var(--card-border)}
+.upload-progress.active{display:block}
+.upload-progress i{font-size:1.8rem;color:var(--secondary);display:block;margin-bottom:.6rem;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.image-viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:5000;display:none;align-items:center;justify-content:center;padding:1rem;cursor:zoom-out}
+.image-viewer.active{display:flex;animation:fadeIn .2s}
+.image-viewer img{max-width:100%;max-height:100%;border-radius:12px}
+input[type="file"]{display:none !important;visibility:hidden !important;position:absolute !important;width:0 !important;height:0 !important;opacity:0 !important;pointer-events:none !important}
+.toast-container{position:fixed;top:90px;left:50%;transform:translateX(-50%);z-index:7000;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:calc(100% - 2rem);max-width:380px}
+.toast{padding:.85rem 1.1rem;border-radius:14px;font-size:.85rem;font-weight:600;color:#fff;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:toastIn .3s ease;pointer-events:auto;backdrop-filter:blur(10px)}
+.toast.hide{animation:toastOut .3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-20px)}}
+.toast i{font-size:1.1rem;flex-shrink:0}
+.toast.success{background:linear-gradient(135deg,#10b981,#059669)}
+.toast.error{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.toast.info{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+.toast.warning{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);z-index:6000;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.confirm-overlay.active{display:flex;animation:fadeIn .2s ease}
+.confirm-box{background:var(--bg);border:1px solid var(--card-border);border-radius:20px;padding:1.8rem 1.5rem;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.6);animation:popIn .25s ease}
+.confirm-icon{width:56px;height:56px;margin:0 auto 1rem;border-radius:50%;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);display:flex;align-items:center;justify-content:center;color:#ef4444;font-size:1.4rem}
+.confirm-box h3{font-size:1.1rem;font-weight:800;margin-bottom:.4rem}
+.confirm-box p{font-size:.82rem;color:var(--text-muted);margin-bottom:1.4rem;line-height:1.4}
+.confirm-actions{display:flex;gap:8px}
+.confirm-actions button{flex:1;padding:.8rem;border-radius:12px;border:1px solid var(--card-border);font-weight:700;font-size:.85rem;cursor:pointer}
+.confirm-actions .btn-cancel-confirm{background:var(--card-bg);color:var(--text)}
+.confirm-actions .btn-delete-confirm{background:linear-gradient(135deg,#ef4444,#dc2626);border:none;color:#fff;box-shadow:0 4px 15px rgba(239,68,68,.4)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.modal-overlay.active{display:flex;animation:fadeIn .3s ease}
+.modal-card{background:var(--bg);border:1px solid var(--card-border);border-radius:24px;padding:2rem 1.5rem;width:100%;max-width:350px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.6);position:relative}
+.modal-card .close-btn{position:absolute;top:15px;right:15px;background:transparent;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer}
+.modal-card h2{font-size:1.4rem;margin-bottom:1rem;font-weight:800}
+.modal-card input{width:100%;padding:.9rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;color:var(--text);margin-bottom:.8rem;outline:none;font-size:.9rem}
+.modal-card input:focus{border-color:var(--primary)}
+.modal-card .btn-submit{width:100%;padding:.9rem;background:linear-gradient(135deg,var(--primary),var(--secondary));border:none;border-radius:12px;color:#fff;font-weight:800;font-size:.95rem;cursor:pointer;box-shadow:0 4px 15px rgba(37,99,235,.3);margin-top:.5rem}
+.modal-card .switch-form{font-size:.8rem;color:var(--text-muted);margin-top:1rem}
+.modal-card .switch-form span{color:var(--primary);font-weight:700;cursor:pointer}
+.loading-state{text-align:center;padding:2rem 1rem;color:var(--text-muted);font-size:.85rem}
+.loading-state i{display:block;font-size:2rem;margin-bottom:.8rem;color:var(--primary);animation:spin 1s linear infinite}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- IMAGE VIEWER -->
+<div class="image-viewer" id="imageViewer" onclick="tutupImageViewer()"><img id="imageViewerImg" src="" alt="Foto"></div>
+
+<!-- UPLOAD PROGRESS -->
+<div class="upload-progress" id="uploadProgress"><i class="fa-solid fa-circle-notch"></i><span id="uploadText">Mengunggah foto...</span></div>
+
+<!-- PHOTO PICKER -->
+<div class="photo-picker-overlay" id="photoPickerOverlay" onclick="if(event.target.id==='photoPickerOverlay') tutupPhotoPicker()">
+  <div class="photo-picker">
+    <h3>Kirim Foto</h3>
+    <button onclick="pilihFoto('camera')"><i class="fa-solid fa-camera"></i> Ambil dari Kamera</button>
+    <button onclick="pilihFoto('gallery')"><i class="fa-solid fa-image"></i> Pilih dari Galeri</button>
+    <button class="btn-cancel" onclick="tutupPhotoPicker()">Batal</button>
+  </div>
+</div>
+
+<input type="file" id="fileCamera" accept="image/*" capture="environment" onchange="handleFilePicked(event)">
+<input type="file" id="fileGallery" accept="image/*" onchange="handleFilePicked(event)">
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODAL HAPUS -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon"><i class="fa-solid fa-trash"></i></div>
+    <h3>Hapus Pesan?</h3>
+    <p>Pesan ini akan dihapus permanen dan gak bisa dibalikin.</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel-confirm" onclick="tutupKonfirmasi()">Batal</button>
+      <button class="btn-delete-confirm" onclick="lanjutHapus()">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AUTH -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-card">
+    <button class="close-btn" onclick="tutupModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div id="formLogin">
+      <h2>Masuk</h2>
+      <input type="text" id="loginUser" placeholder="Username">
+      <input type="password" id="loginPass" placeholder="Password">
+      <button class="btn-submit" onclick="prosesMasuk()">Masuk</button>
+      <div class="switch-form">Belum punya akun? <span onclick="gantiForm('daftar')">Daftar</span></div>
+    </div>
+    <div id="formDaftar" style="display:none;">
+      <h2>Daftar</h2>
+      <input type="text" id="regUser" placeholder="Username Baru">
+      <input type="password" id="regPass" placeholder="Password Baru">
+      <input type="password" id="regPassConfirm" placeholder="Konfirmasi Password">
+      <button class="btn-submit" onclick="prosesDaftar()">Daftar</button>
+      <div class="switch-form">Sudah punya akun? <span onclick="gantiForm('login')">Masuk</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR ATAS -->
+<nav class="navbar">
+  <div class="brand"><div class="brand-icon"><i class="fa-solid fa-bolt"></i></div> LummXD</div>
+  <div class="nav-right">
+    <div class="digital-clock"><i class="fa-regular fa-clock clock-icon"></i><span class="clock-time" id="clockTime">--:--</span><span class="clock-sec" id="clockSec">:--</span></div>
+    <button class="btn-theme" id="themeBtn"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
+  </div>
+</nav>
+
+<!-- BERANDA -->
+<div id="page-beranda" class="page-content active">
+  <div class="hero-section">
+    <div class="banner-wrapper"><img src="banner.jpg" alt="LummXD Banner"></div>
+    <div class="hero-text">
+      <h1>Solusi Digital<br><span>Dalam Satu Tempat</span></h1>
+      <p>Akses layanan top up, tools premium, dan kebutuhan digital lainnya dengan cepat dan aman.</p>
+      <div class="hero-clock"><div class="hc-time" id="heroClock">--:--:--</div><div class="hc-date" id="heroDate">Memuat tanggal...</div></div>
+      <div class="social-row">
+        <a href="https://www.tiktok.com/@lumzssstore_reall" target="_blank" class="btn-social tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+        <a href="https://whatsapp.com/channel/0029Vb8UPJqDzgTEfcxodd1v" target="_blank" class="btn-social wa"><i class="fa-brands fa-whatsapp"></i> Saluran</a>
+        <a href="https://donate-lummxd.vercel.app" target="_blank" class="btn-social kopi"><i class="fa-solid fa-mug-hot"></i> Traktir Kopi</a>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="section-title">Layanan Kami</div>
+    <div class="bento-grid">
+      <a href="https://all-tools-lummxd.vercel.app" target="_blank" class="bento-card"><div class="bento-icon"><i class="fa-solid fa-toolbox"></i></div><div><h3>All Tools</h3><p>Berbagai alat bantu digital untuk mempermudah pekerjaanmu.</p></div></a>
+      <a href="https://shop-lummxd.vercel.app" target="_blank" class="bento-card"><div class="bento-icon"><i class="fa-solid fa-rocket"></i></div><div><h3>Boost Saluran</h3><p>Tingkatkan subscriber & engagement.</p></div></a>
+      <a href="https://prem-app-lummxd.vercel.app" target="_blank" class="bento-card"><div class="bento-icon"><i class="fa-solid fa-crown"></i></div><div><h3>AM Prem 1Thn</h3><p>Aplikasi premium harga murah.</p></div></a>
+      <a href="https://toplumzy.grosirtopup.com" target="_blank" class="bento-card"><div class="bento-icon"><i class="fa-solid fa-gamepad"></i></div><div><h3>Top Up Game</h3><p>Isi diamond, UC, & voucher game favoritmu.</p></div></a>
+      <a href="https://princelis-lummxd.vercel.app" target="_blank" class="bento-card"><div class="bento-icon"><i class="fa-solid fa-envelope"></i></div><div><h3>Rental Gmail</h3><p>Sewa akun Gmail berkualitas.</p></div></a>
+      <a href="https://lummxd-musicsptfy-tools.vercel.app" target="_blank" class="bento-card"><div class="bento-icon"><i class="fa-solid fa-music"></i></div><div><h3>Music Tools</h3><p>Download musik praktis.</p></div></a>
+    </div>
+  </div>
+</div>
+
+<!-- QURAN -->
+<div id="page-quran" class="page-content">
+  <div class="quran-wrapper">
+    <div id="quranListView">
+      <div class="quran-header"><h1>Al-Qur'an Digital</h1><p>114 Surah • Arab, Latin & Terjemahan</p></div>
+      <div class="quran-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="surahSearch" placeholder="Cari surah..." onkeyup="cariSurah()"></div>
+      <div class="surah-list" id="surahList"><div class="loading-state"><i class="fa-solid fa-circle-notch"></i> Memuat...</div></div>
+    </div>
+    <div class="surah-detail" id="surahDetailView">
+      <button class="back-btn" onclick="tutupSurah()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+      <div class="surah-detail-header" id="surahDetailHeader"></div>
+      <div class="ayat-list" id="ayatList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="page-chat" class="page-content">
+  <div class="chat-wrapper">
+    <div class="chat-header">
+      <h1><i class="fa-solid fa-comments"></i> Chat Global</h1>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div class="chat-status" id="chatStatus" style="display:none;"><span class="dot"></span> <span id="onlineCount">0</span> Online</div>
+        <button onclick="logoutChat()" id="btnLogout" style="display:none; background:transparent; border:none; color:#ef4444; font-weight:600; font-size:0.8rem; cursor:pointer;">Keluar</button>
+      </div>
+    </div>
+    <div class="chat-name-form" id="chatNameForm" style="text-align:center; margin-top:2rem; display:none;">
+      <h2>Belum Masuk</h2>
+      <p style="color:var(--text-muted); margin-bottom:1rem; font-size:0.85rem;">Kamu harus masuk untuk bisa ikut chat.</p>
+      <button onclick="bukaModal()" style="padding:0.9rem 2rem; background:linear-gradient(135deg, var(--primary), var(--secondary)); border:none; border-radius:12px; color:white; font-weight:700; cursor:pointer;">Masuk Sekarang</button>
+    </div>
+    <div class="chat-box" id="chatBox" style="display:none;">
+      <div class="loading-state"><i class="fa-solid fa-circle-notch fa-spin"></i> Menghubungkan...</div>
+    </div>
+    <div class="reply-bar" id="replyBar">
+      <div><strong id="replyName">Membalas...</strong><span id="replyText">Pesan...</span></div>
+      <button onclick="batalBalas()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="chat-input-area" id="chatInputArea" style="display:none;">
+      <button class="btn-photo" onclick="bukaPhotoPicker()" title="Kirim Foto"><i class="fa-solid fa-camera"></i></button>
+      <input type="text" id="chatInput" placeholder="Ketik pesan..." maxlength="200" onkeypress="if(event.key==='Enter') kirimPesan()">
+      <button class="btn-send" onclick="kirimPesan()" title="Kirim"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- DEV -->
+<div id="page-developer" class="page-content">
+  <div class="dev-page-wrapper">
+    <div class="dev-card">
+      <div class="dev-avatar"><img src="gambar.jpg" alt="Developer"></div>
+      <div class="dev-badge">Developer</div>
+      <h2 class="dev-name">LummXD <i class="fa-solid fa-circle-check"></i></h2>
+      <p class="dev-desc">Independent developer • Digital creator • Building projects with passion.</p>
+      <div class="quote-card">
+        <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+        <h3>"Happiness is not having a lot, but appreciating what you have."</h3>
+        <p>(Kebahagiaan bukanlah memiliki banyak hal, melainkan menghargai apa yang kamu punya.)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR BAWAH -->
+<nav class="bottom-nav">
+  <a href="#" class="nav-link active" onclick="gantiHalaman('beranda', this); return false;"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+  <a href="#" class="nav-link" onclick="gantiHalaman('quran', this); return false;"><i class="fa-solid fa-book-quran"></i><span>Al-Qur'an</span></a>
+  <a href="#" class="nav-link" onclick="gantiHalaman('chat', this); return false;"><i class="fa-solid fa-comments"></i><span>Chat</span></a>
+  <a href="#" class="nav-link" onclick="gantiHalaman('developer', this); return false;"><i class="fa-solid fa-code"></i><span>Developer</span></a>
+</nav>
+<script>
+// ========== TEMA ==========
+const btnTheme=document.getElementById('themeBtn'),iconTheme=document.getElementById('themeIcon'),htmlEl=document.documentElement;
+if(localStorage.getItem('theme')==='light'){htmlEl.setAttribute('data-theme','light');iconTheme.className='fa-solid fa-sun';}
+btnTheme.onclick=()=>{if(htmlEl.getAttribute('data-theme')==='light'){htmlEl.removeAttribute('data-theme');localStorage.setItem('theme','dark');iconTheme.className='fa-solid fa-moon';}else{htmlEl.setAttribute('data-theme','light');localStorage.setItem('theme','light');iconTheme.className='fa-solid fa-sun';}};
+
+// ========== TOAST ==========
+function toast(msg,type='info',duration=3000){
+  const c=document.getElementById('toastContainer');
+  const icons={success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<i class="fa-solid ${icons[type]||icons.info}"></i> <span>${msg}</span>`;
+  c.appendChild(el);
+  setTimeout(()=>{el.classList.add('hide');setTimeout(()=>el.remove(),300);},duration);
+}
+
+// ========== JAM ==========
+const NAMA_HARI=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],NAMA_BULAN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],pad=n=>String(n).padStart(2,'0');
+function updateClock(){const now=new Date();document.getElementById('clockTime').textContent=`${pad(now.getHours())}:${pad(now.getMinutes())}`;document.getElementById('clockSec').textContent=`:${pad(now.getSeconds())}`;document.getElementById('heroClock').textContent=`${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;document.getElementById('heroDate').textContent=`${NAMA_HARI[now.getDay()]}, ${now.getDate()} ${NAMA_BULAN[now.getMonth()]} ${now.getFullYear()}`;}
+updateClock();setInterval(updateClock,1000);
+
+// ========== NAVIGASI ==========
+function gantiHalaman(id,elemen){
+  document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+  elemen.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='chat')initChat();
+  if(id==='quran'&&!window.quranLoaded){window.quranLoaded=true;loadQuran();}
+}
+
+// ========== QURAN ==========
+let allSurah=[];
+async function loadQuran(){
+  const listEl=document.getElementById('surahList');
+  try{const res=await fetch('https://equran.id/api/v2/surat');const json=await res.json();allSurah=json.data;renderQuranList(allSurah);}
+  catch(e){listEl.innerHTML='Gagal memuat.';}
+}
+function renderQuranList(data){
+  const listEl=document.getElementById('surahList');
+  if(!data.length)return listEl.innerHTML='Tidak ditemukan.';
+  listEl.innerHTML=data.map(s=>`<button class="surah-item" onclick="bukaSurah(${s.nomor})"><div class="surah-number">${s.nomor}</div><div class="surah-info"><div class="surah-name">${s.namaLatin}</div><div class="surah-meta">${s.arti} • ${s.jumlahAyat} ayat</div></div><div class="surah-arabic">${s.nama}</div></button>`).join('');
+}
+function cariSurah(){const q=document.getElementById('surahSearch').value.toLowerCase();renderQuranList(allSurah.filter(s=>s.namaLatin.toLowerCase().includes(q)));}
+function tutupSurah(){document.getElementById('surahDetailView').classList.remove('active');document.getElementById('quranListView').style.display='block';window.scrollTo(0,0);}
+async function bukaSurah(n){
+  document.getElementById('quranListView').style.display='none';
+  document.getElementById('surahDetailView').classList.add('active');
+  const hdr=document.getElementById('surahDetailHeader'),ay=document.getElementById('ayatList');
+  hdr.innerHTML='Memuat...';ay.innerHTML='';
+  try{
+    const res=await fetch(`https://equran.id/api/v2/surat/${n}`);const j=await res.json();const s=j.data;
+    hdr.innerHTML=`<div class="sd-arabic">${s.nama}</div><div class="sd-name">${s.nomor}. ${s.namaLatin}</div><div class="sd-meta">${s.arti} • ${s.jumlahAyat} ayat</div>`;
+    ay.innerHTML=s.ayat.map(a=>`<div class="ayat-card"><div class="ayat-top"><div class="ayat-number">${a.nomorAyat}</div></div><div class="ayat-arabic">${a.teksArab}</div><div class="ayat-latin">${a.teksLatin}</div><div class="ayat-translation">${a.teksIndonesia}</div></div>`).join('');
+    window.scrollTo(0,0);
+  }catch(e){ay.innerHTML='Gagal memuat.';}
+}
+
+// ========== SUPABASE CONFIG ==========
+const SUPABASE_URL='https://htleslhgheqeszfusoai.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_tB_WO1XeRI1HO-cBenSdSg_b5SnRN2Q'; // ⚠️ GANTI dengan key kamu
+
+let supabaseClient=null,chatChannel=null,chatInitialized=false;
+let username=localStorage.getItem('lummxd_username')||'';
+let userRole=localStorage.getItem('lummxd_role')||'user';
+let replyingTo=null,pendingDeleteId=null;
+
+// ========== AUTH ==========
+function bukaModal(){document.getElementById('authModal').classList.add('active');}
+function tutupModal(){document.getElementById('authModal').classList.remove('active');}
+function gantiForm(type){document.getElementById('formLogin').style.display=type==='login'?'block':'none';document.getElementById('formDaftar').style.display=type==='daftar'?'block':'none';}
+
+function prosesDaftar(){
+  const u=document.getElementById('regUser').value.trim(),p=document.getElementById('regPass').value,pc=document.getElementById('regPassConfirm').value;
+  if(!u||!p)return toast('Isi semua kolom dulu!','warning');
+  if(p!==pc)return toast('Password tidak cocok!','error');
+  if(u.toLowerCase()==='lummxd')return toast('Username ini khusus Owner!','error');
+  let users=JSON.parse(localStorage.getItem('lummxd_users_db')||'{}');
+  if(users[u.toLowerCase()])return toast('Username sudah dipakai!','error');
+  users[u.toLowerCase()]=p;
+  localStorage.setItem('lummxd_users_db',JSON.stringify(users));
+  toast('Berhasil daftar! Silakan masuk.','success');
+  gantiForm('login');
+  document.getElementById('loginUser').value=u;
+}
+
+function prosesMasuk(){
+  const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;
+  if(!u||!p)return toast('Isi semua kolom dulu!','warning');
+  if(u.toLowerCase()==='lummxd'&&p==='lummxd112'){username='LummXD';userRole='owner';}
+  else{
+    let users=JSON.parse(localStorage.getItem('lummxd_users_db')||'{}');
+    if(users[u.toLowerCase()]&&users[u.toLowerCase()]===p){username=u;userRole='user';}
+    else return toast('Username/Password salah!','error');
+  }
+  localStorage.setItem('lummxd_username',username);
+  localStorage.setItem('lummxd_role',userRole);
+  tutupModal();
+  toast('Selamat datang, '+username+'!','success');
+  initChat();
+}
+
+function logoutChat(){localStorage.removeItem('lummxd_username');localStorage.removeItem('lummxd_role');location.reload();}
+
+// ========== CHAT INIT ==========
+function initChat(){
+  if(username){
+    document.getElementById('chatNameForm').style.display='none';
+    document.getElementById('chatBox').style.display='flex';
+    document.getElementById('chatInputArea').style.display='flex';
+    document.getElementById('chatStatus').style.display='flex';
+    document.getElementById('btnLogout').style.display='block';
+    startChatConnection();
+  }else{
+    document.getElementById('chatNameForm').style.display='block';
+    document.getElementById('chatBox').style.display='none';
+    document.getElementById('chatInputArea').style.display='none';
+    document.getElementById('chatStatus').style.display='none';
+    document.getElementById('btnLogout').style.display='none';
+    bukaModal();
+  }
+}
+
+async function startChatConnection(){
+  if(chatInitialized)return;
+  chatInitialized=true;
+  supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  const chatBox=document.getElementById('chatBox');
+  chatBox.innerHTML=`<div style="text-align:center; margin-top:2rem; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>`;
+  try{
+    const {data,error}=await supabaseClient.from('messages').select('*').order('created_at',{ascending:true}).limit(50);
+    if(error)throw error;
+    chatBox.innerHTML='';
+    data.forEach(msg=>renderPesan(msg));
+    scrollToBottom();
+  }catch(err){chatBox.innerHTML=`<div style="color:#ef4444; text-align:center; margin-top:2rem;">Gagal memuat database.</div>`;}
+
+  chatChannel=supabaseClient.channel('room-global')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{if(!document.getElementById('msg-'+payload.new.id)){renderPesan(payload.new);scrollToBottom();}})
+    .on('postgres_changes',{event:'DELETE',schema:'public',table:'messages'},payload=>{const el=document.getElementById('msg-'+payload.old.id);if(el)el.remove();})
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages'},payload=>{updateReactionUI(payload.new);})
+    .on('presence',{event:'sync'},()=>{document.getElementById('onlineCount').textContent=Object.keys(chatChannel.presenceState()).length;})
+    .subscribe(async status=>{if(status==='SUBSCRIBED')await chatChannel.track({name:username});});
+}
+
+// ========== MENU AKSI ==========
+function toggleActionMenu(id,event){
+  document.querySelectorAll('.msg-actions').forEach(el=>el.classList.remove('active'));
+  const menu=document.getElementById('actions-'+id);
+  if(menu)menu.classList.add('active');
+  if(event)event.stopPropagation();
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.msg-actions')&&!e.target.closest('.chat-bubble'))document.querySelectorAll('.msg-actions').forEach(el=>el.classList.remove('active'));
+});
+
+// ========== SWIPE REPLY ==========
+let touchStartX=0,touchCurrentX=0;
+function handleTouchStart(e){touchStartX=e.touches[0].clientX;}
+function handleTouchMove(e,id){touchCurrentX=e.touches[0].clientX;const diff=touchCurrentX-touchStartX;const container=document.getElementById('bubble-cont-'+id);if(diff>0){container.style.transform=`translateX(${Math.min(diff,60)}px)`;const icon=document.getElementById('swipe-icon-'+id);if(diff>40)icon.style.opacity='1';}}
+function handleTouchEnd(e,id,name,text){const diff=touchCurrentX-touchStartX;const container=document.getElementById('bubble-cont-'+id);container.style.transform='translateX(0px)';document.getElementById('swipe-icon-'+id).style.opacity='0';if(diff>50){mulaiBalas(id,name,text);touchStartX=0;touchCurrentX=0;}}
+
+function mulaiBalas(id,nama,teks){
+  replyingTo={id,name:nama,text:teks};
+  document.getElementById('replyBar').classList.add('active');
+  document.getElementById('replyName').textContent='Membalas '+nama;
+  document.getElementById('replyText').textContent=teks.length>30?teks.substring(0,30)+'...':teks;
+  document.getElementById('chatInput').focus();
+}
+function batalBalas(){replyingTo=null;document.getElementById('replyBar').classList.remove('active');}
+
+// ========== KIRIM PESAN ==========
+async function kirimPesan(){
+  const input=document.getElementById('chatInput');
+  const content=input.value.trim();
+  if(!content||!supabaseClient)return;
+  input.value='';
+  const reply_id=replyingTo?replyingTo.id:null;
+  const reply_text=replyingTo?replyingTo.name+': '+replyingTo.text:null;
+  batalBalas();
+  const {error}=await supabaseClient.from('messages').insert([{username,content,role:userRole,reply_to_id:reply_id,reply_to_text:reply_text,reactions:'{}',image_url:null}]);
+  if(error)toast('Gagal mengirim: '+error.message,'error');
+}
+
+// ========== FOTO ==========
+function bukaPhotoPicker(){document.getElementById('photoPickerOverlay').classList.add('active');}
+function tutupPhotoPicker(){document.getElementById('photoPickerOverlay').classList.remove('active');}
+function pilihFoto(mode){tutupPhotoPicker();if(mode==='camera')document.getElementById('fileCamera').click();else document.getElementById('fileGallery').click();}
+
+async function handleFilePicked(event){
+  const file=event.target.files[0];
+  if(!file||!supabaseClient)return;
+  if(file.size>5*1024*1024){toast('Maksimal ukuran foto 5MB','error');event.target.value='';return;}
+  if(!file.type.startsWith('image/')){toast('File harus berupa gambar','error');event.target.value='';return;}
+  const prog=document.getElementById('uploadProgress');
+  prog.classList.add('active');
+  document.getElementById('uploadText').textContent='Mengunggah foto...';
+  try{
+    const ext=file.name.split('.').pop()||'jpg';
+    const filename=`${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const {error:upErr}=await supabaseClient.storage.from('chat-images').upload(filename,file,{cacheControl:'3600',upsert:false});
+    if(upErr)throw upErr;
+    const {data:pub}=supabaseClient.storage.from('chat-images').getPublicUrl(filename);
+    const imageUrl=pub.publicUrl;
+    const reply_id=replyingTo?replyingTo.id:null;
+    const reply_text=replyingTo?replyingTo.name+': '+replyingTo.text:null;
+    batalBalas();
+    const {error:insErr}=await supabaseClient.from('messages').insert([{username,content:'📷 Foto',role:userRole,reply_to_id:reply_id,reply_to_text:reply_text,reactions:'{}',image_url:imageUrl}]);
+    if(insErr)throw insErr;
+    toast('Foto terkirim!','success');
+  }catch(err){toast('Gagal upload foto: '+err.message,'error');}
+  finally{prog.classList.remove('active');event.target.value='';}
+}
+
+function bukaImageViewer(url){document.getElementById('imageViewerImg').src=url;document.getElementById('imageViewer').classList.add('active');}
+function tutupImageViewer(){document.getElementById('imageViewer').classList.remove('active');}
+
+// ========== HAPUS (MODAL CUSTOM) ==========
+function hapusPesan(id){
+  if(!supabaseClient)return;
+  pendingDeleteId=id;
+  document.getElementById('confirmOverlay').classList.add('active');
+}
+function tutupKonfirmasi(){pendingDeleteId=null;document.getElementById('confirmOverlay').classList.remove('active');}
+async function lanjutHapus(){
+  if(!pendingDeleteId)return;
+  const id=pendingDeleteId;
+  tutupKonfirmasi();
+  const {error}=await supabaseClient.from('messages').delete().eq('id',id);
+  if(error)toast('Gagal hapus: '+error.message,'error');
+  else toast('Pesan dihapus','success');
+}
+
+// ========== REACTION ==========
+async function tambahReaksi(id,emoji){
+  if(!supabaseClient)return;
+  const {data}=await supabaseClient.from('messages').select('reactions').eq('id',id).single();
+  let reacts={};
+  try{reacts=JSON.parse(data.reactions||'{}');}catch(e){}
+  if(reacts[username]===emoji)delete reacts[username];
+  else reacts[username]=emoji;
+  await supabaseClient.from('messages').update({reactions:JSON.stringify(reacts)}).eq('id',id);
+  document.querySelectorAll('.msg-actions').forEach(el=>el.classList.remove('active'));
+}
+
+function updateReactionUI(msg){
+  const display=document.getElementById('reactions-'+msg.id);
+  if(!display)return;
+  let reacts={};
+  try{reacts=JSON.parse(msg.reactions||'{}');}catch(e){}
+  const values=Object.values(reacts);
+  if(values.length===0){display.style.display='none';}
+  else{
+    const counts={};
+    values.forEach(v=>counts[v]=(counts[v]||0)+1);
+    display.innerHTML=Object.entries(counts).map(([emoji,count])=>`<span>${emoji}${count>1?' '+count:''}</span>`).join('');
+    display.style.display='flex';
+  }
+}
+
+// ========== RENDER PESAN ==========
+function renderPesan(msg){
+  const chatBox=document.getElementById('chatBox');
+  const isMine=msg.username===username;
+  let badgeHtml=msg.role==='owner'?'<span class="badge-owner"><i class="fa-solid fa-crown"></i> OWNER</span>':'';
+  const time=new Date(msg.created_at).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}).replace('.',':');
+  let replyHtml=msg.reply_to_text?`<div class="reply-preview"><strong>${msg.reply_to_text.split(':')[0]}</strong><span>${escapeHtml(msg.reply_to_text.split(':').slice(1).join(':').trim())}</span></div>`:'';
+  const imgHtml=msg.image_url?`<img class="chat-image" src="${msg.image_url}" alt="Foto" onclick="event.stopPropagation();bukaImageViewer('${msg.image_url}')">`:'';
+  const div=document.createElement('div');
+  div.className=`chat-msg ${isMine?'mine':''}`;
+  div.id=`msg-${msg.id}`;
+  let btnHapus=isMine?`<button class="btn-delete" onclick="event.stopPropagation();hapusPesan('${msg.id}')" title="Hapus"><i class="fa-solid fa-trash"></i></button>`:'';
+  div.innerHTML=`
+    <div class="chat-meta">${badgeHtml} <span>${msg.username}</span> <span>•</span> <span>${time}</span></div>
+    <div class="bubble-container" id="bubble-cont-${msg.id}" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event, '${msg.id}')" ontouchend="handleTouchEnd(event, '${msg.id}', '${msg.username}', '${escapeHtml(msg.content||'').replace(/'/g,"\\'")}')">
+      <div class="swipe-reply-icon" id="swipe-icon-${msg.id}"><i class="fa-solid fa-reply"></i></div>
+      <div class="chat-bubble" onclick="toggleActionMenu('${msg.id}', event)">
+        ${replyHtml} ${msg.image_url?'':escapeHtml(msg.content)}
+        ${imgHtml}
+        <div class="reaction-display" id="reactions-${msg.id}" style="display:none;"></div>
+      </div>
+      <div class="msg-actions" id="actions-${msg.id}">
+        <button onclick="tambahReaksi('${msg.id}', '❤️')">❤️</button>
+        <button onclick="tambahReaksi('${msg.id}', '👍')">👍</button>
+        <button onclick="tambahReaksi('${msg.id}', '😂')">😂</button>
+        <button onclick="tambahReaksi('${msg.id}', '😮')">😮</button>
+        <button onclick="tambahReaksi('${msg.id}', '😢')">😢</button>
+        <button onclick="tambahReaksi('${msg.id}', '🔥')">🔥</button>
+        ${btnHapus}
+      </div>
+    </div>
+  `;
+  chatBox.appendChild(div);
+  updateReactionUI(msg);
+}
+
+function scrollToBottom(){const chatBox=document.getElementById('chatBox');chatBox.scrollTop=chatBox.scrollHeight;}
+function escapeHtml(text){const div=document.createElement('div');div.innerText=text||'';return div.innerHTML;}
+</script>
+</body>
+</html>
