@@ -2,38 +2,6 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/am-prem",
-      "destination": "https://prem-app-lummxd.vercel.app/"
-    },
-    {
-      "source": "/am-prem/:path*",
-      "destination": "https://prem-app-lummxd.vercel.app/:path*"
-    },
-    {
-      "source": "/boost-saluran",
-      "destination": "https://shop-lummxd.vercel.app/"
-    },
-    {
-      "source": "/boost-saluran/:path*",
-      "destination": "https://shop-lummxd.vercel.app/:path*"
-    },
-    {
-      "source": "/rental-gmail",
-      "destination": "https://princelis-lummxd.vercel.app/"
-    },
-    {
-      "source": "/rental-gmail/:path*",
-      "destination": "https://princelis-lummxd.vercel.app/:path*"
-    },
-    {
-      "source": "/music-tools",
-      "destination": "https://lummxd-musicsptfy-tools.vercel.app/"
-    },
-    {
-      "source": "/music-tools/:path*",
-      "destination": "https://lummxd-musicsptfy-tools.vercel.app/:path*"
-    },
-    {
       "source": "/all-tools",
       "destination": "https://all-tools-lummxd.vercel.app/"
     },
