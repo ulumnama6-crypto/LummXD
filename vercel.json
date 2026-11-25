@@ -24,6 +24,22 @@
     {
       "source": "/rental-gmail/:path*",
       "destination": "https://princelis-lummxd.vercel.app/:path*"
+    },
+    {
+      "source": "/music-tools",
+      "destination": "https://lummxd-musicsptfy-tools.vercel.app/"
+    },
+    {
+      "source": "/music-tools/:path*",
+      "destination": "https://lummxd-musicsptfy-tools.vercel.app/:path*"
+    },
+    {
+      "source": "/all-tools",
+      "destination": "https://all-tools-lummxd.vercel.app/"
+    },
+    {
+      "source": "/all-tools/:path*",
+      "destination": "https://all-tools-lummxd.vercel.app/:path*"
     }
   ]
 }
