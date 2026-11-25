@@ -1,43 +1,29 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "headers": [
+  "cleanUrls": true,
+  "rewrites": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "no-referrer"
-        }
-      ]
+      "source": "/am-prem",
+      "destination": "https://prem-app-lummxd.vercel.app/"
     },
     {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://lummxdcloud.vercel.app"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        }
-      ]
+      "source": "/am-prem/:path*",
+      "destination": "https://prem-app-lummxd.vercel.app/:path*"
+    },
+    {
+      "source": "/boost-saluran",
+      "destination": "https://shop-lummxd.vercel.app/"
+    },
+    {
+      "source": "/boost-saluran/:path*",
+      "destination": "https://shop-lummxd.vercel.app/:path*"
+    },
+    {
+      "source": "/rental-gmail",
+      "destination": "https://princelis-lummxd.vercel.app/"
+    },
+    {
+      "source": "/rental-gmail/:path*",
+      "destination": "https://princelis-lummxd.vercel.app/:path*"
     }
   ]
 }
